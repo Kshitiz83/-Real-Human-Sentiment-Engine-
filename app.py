@@ -43,9 +43,8 @@ def predict_sentiment(payload: TweetPayload):
     return {
         "predicted_sentiment": class_mapping[predicted_class_id],
         "confidence_scores": {
-            # Wrapped into standard native floats to prevent JSON serialization errors
-            "negative": float(prob_distribution[0]),
-            "neutral": float(prob_distribution[1]),
-            "positive": float(prob_distribution[2])
+           "negative": float(prob_distribution[0][0]),
+            "neutral": float(prob_distribution[0][1]),
+            "positive": float(prob_distribution[0][2])
         }     
     }
