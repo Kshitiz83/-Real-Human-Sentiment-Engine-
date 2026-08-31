@@ -16,7 +16,6 @@ model.load_model('xgb_sentiment_model.json')
 
 class_mapping = {0: 'negative', 1: 'neutral', 2: 'positive'}
 
-# FIXED: Capital 'M' in BaseModel to prevent NameError
 class TweetPayload(BaseModel):
     text: str
     airline: str
@@ -26,24 +25,24 @@ class TweetPayload(BaseModel):
 def health_check():
     return {"status": "online", "model": "XGBoost Text-Tabular Hybrid"}
 
-# FIXED: Explicitly routing to /predict path mapping 
 @app.post("/predict")
 def predict_sentiment(payload: TweetPayload):
     text_sparse = tfidf.transform([payload.text])
     ohe_sparse = ohe.transform([[payload.airline]])
     numeric_sparse = sp.csr_matrix([[payload.retweet_count]])
 
-    # Reconstruct our identical matrix horizontal features pipeline layout
+    # Reconstruct identical matrix horizontal features pipeline layout
     X_inference = sp.hstack([text_sparse, ohe_sparse, numeric_sparse], format='csr')
 
-    # Extract the probability values 
-    prob_distribution = model.predict_proba(X_inference)[0]
+    # Extract the raw 2D probability distribution array matrix
+    prob_distribution = model.predict_proba(X_inference)
     predicted_class_id = int(np.argmax(prob_distribution))
 
     return {
         "predicted_sentiment": class_mapping[predicted_class_id],
         "confidence_scores": {
-           "negative": float(prob_distribution[0][0]),
+            # FIXED: Explicitly grab row index 0 to fetch the correct scalar probability values
+            "negative": float(prob_distribution[0][0]),
             "neutral": float(prob_distribution[0][1]),
             "positive": float(prob_distribution[0][2])
         }     
