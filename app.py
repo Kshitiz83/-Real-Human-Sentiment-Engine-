@@ -11,8 +11,10 @@ app = FastAPI(title="Real Human Sentiment Engine")
 tfidf = joblib.load('tfidf_vectorizer.joblib')
 ohe = joblib.load('airline_encoder.joblib')
 
-model = xgb.XGBClassifier()
+# Initialize with parameters matching your multi-class target type
+model = xgb.XGBClassifier(objective='multi:softprob', num_class=3)
 model.load_model('xgb_sentiment_model.json')
+
 
 class_mapping = {0: 'negative', 1: 'neutral', 2: 'positive'}
 
