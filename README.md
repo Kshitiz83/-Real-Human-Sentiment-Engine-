@@ -5,7 +5,7 @@ A production-grade machine learning microservice that processes multi-modal (tab
 ---
 
 ## 🏗️ Architecture & Engineering Blueprint
-
+[Raw Human Feedback Data]│├──> Tabular Features ──> [2D Categorical Encoding] ──┐│                                                    ▼└──> Unstructured Text ─> [TfidfVectorizer (1,2)] ──> [SciPy CSR Sparse hstack] ──> [Low-Level xgb.Booster] ──> [Production API]
 ---
 
 ## 🚀 Key Engineering Triumphs & Post-Mortem
